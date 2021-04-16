@@ -1,0 +1,521 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Satellite 6 Performance Tuning Guide documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="copyright" title="Copyright" href="#" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="satellite-6-7-performance-tuning-guide">
+<h1>Satellite 6.7 Performance Tuning Guide<a class="headerlink" href="#satellite-6-7-performance-tuning-guide" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<span id="document-authors"></span><div class="section" id="authors">
+<h2>Authors<a class="headerlink" href="#authors" title="Permalink to this headline">¶</a></h2>
+<p>Pradeep Surisetty &lt;<a class="reference external" href="mailto:psuriset&#37;&#52;&#48;redhat&#46;com">psuriset<span>&#64;</span>redhat<span>&#46;</span>com</a>&gt;</p>
+<p>Jan Hutar &lt;<a class="reference external" href="mailto:jhutar&#37;&#52;&#48;redhat&#46;com">jhutar<span>&#64;</span>redhat<span>&#46;</span>com</a>&gt;</p>
+<p>Mike McCune &lt;<a class="reference external" href="mailto:mmccune&#37;&#52;&#48;redhat&#46;com">mmccune<span>&#64;</span>redhat<span>&#46;</span>com</a>&gt;</p>
+<p>Sureshkumar Thirugnanasambandan &lt;<a class="reference external" href="mailto:sthirugn&#37;&#52;&#48;redhat&#46;com">sthirugn<span>&#64;</span>redhat<span>&#46;</span>com</a>&gt;</p>
+<p>Imaanpreet Kaur &lt;<a class="reference external" href="mailto:ikaur&#37;&#52;&#48;redhat&#46;com">ikaur<span>&#64;</span>redhat<span>&#46;</span>com</a>&gt;</p>
+<p>Andrew Puch &lt;<a class="reference external" href="mailto:apuch&#37;&#52;&#48;redhat&#46;com">apuch<span>&#64;</span>redhat<span>&#46;</span>com</a>&gt;</p>
+</div>
+<span id="document-copyright"></span><div class="section" id="legal-notice">
+<h2>Legal notice<a class="headerlink" href="#legal-notice" title="Permalink to this headline">¶</a></h2>
+<p>Copyright © 2020 Red Hat, Inc.</p>
+<p>The text of and illustrations in this document are licensed by Red Hat under a Creative Commons Attribution–Share Alike 3.0 Unported license (“CC-BY-SA”).</p>
+<p>An explanation of CC-BY-SA is available at <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">http://creativecommons.org/licenses/by-sa/3.0/</a></p>
+<p>In accordance with CC-BY-SA, if you distribute this document or an adaptation of it, you must provide the URL for the original version. Red Hat, as the licensor of this document, waives the right to enforce, and agrees not to assert, Section 4d of CC-BY-SA to the fullest extent permitted by applicable law. Red Hat, Red Hat Enterprise Linux, the Shadowman logo, JBoss, OpenShift, Fedora, the Infinity logo, and RHCE are trademarks of Red Hat, Inc., registered in the United States and other countries.</p>
+<p>Linux ® is the registered trademark of Linus Torvalds in the United States and other countries.</p>
+<p>Java ® is a registered trademark of Oracle and/or its affiliates.</p>
+<p>XFS ® is a trademark of Silicon Graphics International Corp. or its subsidiaries in the United States and/or other countries.</p>
+<p>MySQL ® is a registered trademark of MySQL AB in the United States, the European Union and other countries.</p>
+<p>Node.js ® is an official trademark of Joyent. Red Hat Software Collections is not formally related to or endorsed by the official Joyent Node.js open source or commercial project.</p>
+<p>The OpenStack ® Word Mark and OpenStack logo are either registered trademarks/service marks or trademarks/service marks of the OpenStack Foundation, in the United States and other countries and are used with the OpenStack Foundation’s permission. We are not affiliated with, endorsed or sponsored by the OpenStack Foundation, or the OpenStack community.</p>
+<p>All other trademarks are the property of their respective owners.</p>
+</div>
+<span id="document-abstract"></span><div class="section" id="abstract">
+<h2>Abstract<a class="headerlink" href="#abstract" title="Permalink to this headline">¶</a></h2>
+<p>The performance tuning guide aims to cover the set of tunings and tips that can be used as a reference to scale up your Red Hat Satellite 6.8 environment.</p>
+</div>
+<span id="document-introduction"></span><div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>This document aims to provide the guidelines for tuning Red Hat Satellite 6 for performance and scalability. Although a lot of care has been given to make the content applicable to cover a wide set of use cases, if there is some use case which has not been covered, please feel free to reach out to Red Hat for support for the undocumented use case.</p>
+<p>Red Hat Satellite is a complete system management product that enables system administrators to manage the full life cycle of Red Hat product deployments. Red Hat Satellite can manage these deployments across physical, virtual and private clouds. Red Hat Satellite delivers system provisioning, configuration management, software management, subscription management, and does so while maintaining high scalability and security.</p>
+<p>For more information on Red Hat Satellite 6, please visit:</p>
+<p><a class="reference external" href="https://access.redhat.com/documentation/en-us/red_hat_satellite/6.8/">https://access.redhat.com/documentation/en-us/red_hat_satellite/6.8/</a></p>
+</div>
+<span id="document-system-requirements"></span><div class="section" id="system-requirements">
+<h2>System Requirements<a class="headerlink" href="#system-requirements" title="Permalink to this headline">¶</a></h2>
+<p>For details of Red Hat Satellite 6 hardware and software requirements, please take a look at <a class="reference external" href="https://access.redhat.com/documentation/en-us/red_hat_satellite/6.8/html/installing_satellite_server_from_a_connected_network/preparing-environment-for-satellite-installation#system-requirements_satellite">Preparing your environment for installation</a>, inside the installation guide.</p>
+<div class="section" id="quick-tuning-guide">
+<h3>Quick Tuning Guide<a class="headerlink" href="#quick-tuning-guide" title="Permalink to this headline">¶</a></h3>
+<p>Users who wish to tune their Satellite based on expected managed host counts and hardware allocation can utilize the built in tuning profiles included in Satellite 6.8 and later that are available via the installation routine’s new tuning flag (see <a class="reference external" href="https://github.com/RedHatSatellite/satellite-support/tree/master/tuning-profiles">information in installation guide</a>):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># satellite-installer --help</span>
+<span class="n">Usage</span><span class="p">:</span>
+    <span class="n">satellite</span><span class="o">-</span><span class="n">installer</span> <span class="p">[</span><span class="n">OPTIONS</span><span class="p">]</span>
+
+<span class="n">Options</span><span class="p">:</span>
+<span class="p">[</span><span class="o">....</span><span class="p">]</span>
+      <span class="o">--</span><span class="n">tuning</span> <span class="n">INSTALLATION_SIZE</span>  <span class="n">Tune</span> <span class="k">for</span> <span class="n">an</span> <span class="n">installation</span> <span class="n">size</span><span class="o">.</span> <span class="n">Choices</span><span class="p">:</span> <span class="n">default</span><span class="p">,</span> <span class="n">medium</span><span class="p">,</span> <span class="n">large</span><span class="p">,</span> <span class="n">extra</span><span class="o">-</span><span class="n">large</span><span class="p">,</span> <span class="n">extra</span><span class="o">-</span><span class="n">extra</span><span class="o">-</span><span class="n">large</span> <span class="p">(</span><span class="n">default</span><span class="p">:</span> <span class="s2">&quot;default&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>There are 4 sizes provided based on estimates of the number of managed hosts your Satellite will be hosting.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 33%" />
+<col style="width: 20%" />
+<col style="width: 22%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Number of managed hosts</p></th>
+<th class="head"><p>Recommend RAM</p></th>
+<th class="head"><p>Recommend Cores</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>default</p></td>
+<td><p>0-5000</p></td>
+<td><p>20G</p></td>
+<td><p>4</p></td>
+</tr>
+<tr class="row-odd"><td><p>medium</p></td>
+<td><p>5000-10000</p></td>
+<td><p>32G</p></td>
+<td><p>8</p></td>
+</tr>
+<tr class="row-even"><td><p>large</p></td>
+<td><p>10000-20000</p></td>
+<td><p>64G</p></td>
+<td><p>16</p></td>
+</tr>
+<tr class="row-odd"><td><p>extra-large</p></td>
+<td><p>20000-60000</p></td>
+<td><p>128G</p></td>
+<td><p>32</p></td>
+</tr>
+<tr class="row-even"><td><p>extra-extra-large</p></td>
+<td><p>60000+</p></td>
+<td><p>256G+</p></td>
+<td><p>48+</p></td>
+</tr>
+</tbody>
+</table>
+<p>Instructions for use:</p>
+<ol class="arabic simple">
+<li><p>Determine the profile you wish to use</p></li>
+<li><p>Run <cite>satellite-installer –tuning large</cite>. This will apply to the chosen tuning profile.</p></li>
+<li><p>Resume operations</p></li>
+</ol>
+<p>NOTE: The specific tuning settings for each profile can be viewed in the configuration files contained in <cite>/usr/share/foreman-installer/config/foreman.hiera/tuning/sizes</cite></p>
+</div>
+</div>
+<span id="document-top-performance-considerations"></span><div class="section" id="top-performance-considerations">
+<h2>Top Performance Considerations<a class="headerlink" href="#top-performance-considerations" title="Permalink to this headline">¶</a></h2>
+<p>This is the list of things that you can do to improve the performance and scalability of Red Hat Satellite 6:</p>
+<ul class="simple">
+<li><p>Configuring httpd</p></li>
+<li><p>Configuring passenger to increase concurrency</p></li>
+<li><p>Configure candlepin</p></li>
+<li><p>Configure pulp</p></li>
+<li><p>Configure Foreman’s performance and scalability</p></li>
+<li><p>Configure Dynflow</p></li>
+<li><p>Deploy external Capsule(s) in lieu of internal capsules</p></li>
+<li><p>Configure katello-agent for scalability</p></li>
+<li><p>Configure hammer to reduce API timeouts</p></li>
+<li><p>Configure qpid and qdrouterd</p></li>
+<li><p>Improve PostgreSQL to handle more concurrent loads</p></li>
+<li><p>Configure the storage for DB workloads</p></li>
+<li><p>Consider storage needs and network for compatibility with MongoDB</p></li>
+<li><p>Ensure the storage requirements for Content Views are met</p></li>
+<li><p>Ensure the system requirements are met</p></li>
+<li><p>Improve the environment for remote execution</p></li>
+</ul>
+</div>
+<span id="document-configuring-environment"></span><div class="section" id="configuring-your-environment-for-performance">
+<h2>Configuring your environment for Performance<a class="headerlink" href="#configuring-your-environment-for-performance" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="cpu">
+<h3>CPU<a class="headerlink" href="#cpu" title="Permalink to this headline">¶</a></h3>
+<p>The more physical cores that are available to Satellite 6.8, the higher throughput can be achieved for the tasks. Some of the Satellite components such as Puppet, MongoDB, PostgreSQL are CPU intensive applications and can really benefit from the higher number of available CPU cores.</p>
+</div>
+<div class="section" id="memory">
+<h3>Memory<a class="headerlink" href="#memory" title="Permalink to this headline">¶</a></h3>
+<p>The higher amount of memory available in the system running Satellite, the better will be the response times for the Satellite operations. Since Satellite uses PostgreSQL and MongoDB as the database solutions, any additional memory coupled with the tunings will provide a boost to the response times of the applications due to increased data retention in the memory.</p>
+</div>
+<div class="section" id="disk">
+<h3>Disk<a class="headerlink" href="#disk" title="Permalink to this headline">¶</a></h3>
+<p>With Satellite doing heavy IOPS due to repository synchronizations, package data retrieval, high frequency database updates for the subscription records of the content hosts, it is advised that Satellite be installed on a high speed SSD drive so as to avoid performance bottlenecks which may happen due to increased Disk reads or writes. Satellite 6 requires disk IO to be at or above 60-80 megabytes per second of average throughput for read operations. Anything below this value can have severe implications for the operation of the Satellite.</p>
+<div class="section" id="benchmark-disk-performance">
+<h4>Benchmark disk performance<a class="headerlink" href="#benchmark-disk-performance" title="Permalink to this headline">¶</a></h4>
+<p>We are working to update foreman-maintain to only warn the users when its internal quick ‘fio’ benchmark results in numbers below our recommended throughput but will not require a whitelist parameter to continue.</p>
+<p>Also working on an updated benchmark script you can run (which will likely be integrated into foreman-maintain in the future) to get a more accurate real-world storage information.</p>
+<p>Note:</p>
+<ul class="simple">
+<li><p>One may have to temporarily reduce the RAM in order to run the io benchmark, aka if the box has 256GB that is a lot of pulp space, so add mem=20G kernel option in grub. This is needed because script will execute a series of fio based IO tests against a targeted directory specified in its execution. This test will create a very large file that is double (2x) the size of the physical RAM on this system to ensure that we are not just testing the caching at the OS level of the storage.</p></li>
+<li><p>Please bear above in mind when performing benchmark of other filesystems if you have them (like PostgreSQL or MongoDB storage) which might have significantly smaller capacity than Pulp storage and perhaps on different set of storage (SAN, iSCSI, etc).</p></li>
+</ul>
+<p>This test does not use directio and will utilize the OS + caching as normal operations would.</p>
+<p>You can find our first version of the script <a class="reference external" href="https://github.com/RedHatSatellite/satellite-support/blob/master/storage-benchmark">storage-benchmark</a>. To execute just download to your Satellite, <cite>chmod +x</cite> the script and run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># ./storage-benchmark /var/lib/pulp
+This test creates a test file that is double (2X) the size of this system&#39;s
+RAM in GB. This benchmark will create a test file of size:
+
+64 Gigabytes
+
+in the: [/var/lib/pulp/storage-benchmark] location. This is to ensure that the test utilizes
+a combination of cached and non-cached data during the test.
+
+**** WARNING! Please verify you have enough free space to create a 64 GB
+file in this location before proceeding.
+
+Do you wish to proceed? (Y/N) Y
+
+
+Starting IO tests via the &#39;fio&#39; command. This may take up to an hour or more
+depending on the size of the files being tested. Be patient!
+
+************* Running READ test via fio:
+
+read-test: (g=0): rw=read, bs=(R) 4096B-4096B, (W) 4096B-4096B, (T) 4096B-4096B, ioengine=psync, iodepth=1
+fio-3.1
+Starting 1 process
+…
+</pre></div>
+</div>
+<p>As noted in the README block in the script: generally you wish to see on average 100MB/sec or higher in the tests below:</p>
+<ul class="simple">
+<li><p>Local SSD based storage should values of 600MB/sec or higher.</p></li>
+<li><p>Spinning disks should see values in the range of 100-200MB/sec or higher.</p></li>
+</ul>
+<p>If you see values below this, please open a support ticket for assistance.</p>
+<p>Refer this <a class="reference external" href="https://access.redhat.com/solutions/3397771">blog</a> for more detailed info.</p>
+</div>
+</div>
+<div class="section" id="network">
+<h3>Network<a class="headerlink" href="#network" title="Permalink to this headline">¶</a></h3>
+<p>The communication between the Satellite and Capsules is impacted by the network performance. A decent network with a minimum jitter and low latency is required to enable hassle free operations such as Satellite and Capsule synchronization (at least make sure it is not causing connection resets, etc).</p>
+</div>
+<div class="section" id="server-power-management">
+<h3>Server Power Management<a class="headerlink" href="#server-power-management" title="Permalink to this headline">¶</a></h3>
+<p>Your server by default is likely to be configured to conserve power. While this is a good approach to keep the max power consumption in check, it also has a side effect of lowering the performance that Satellite may be able to achieve. For a server running Satellite, it is recommended to set the BIOS to enable the system to be run in performance mode to boost the maximum performance levels that Satellite can achieve.</p>
+</div>
+</div>
+<span id="document-satellite-configuration-tuning"></span><div class="section" id="satellite-configuration-tuning">
+<h2>Satellite Configuration Tuning<a class="headerlink" href="#satellite-configuration-tuning" title="Permalink to this headline">¶</a></h2>
+<p>Red Hat Satellite as a product comes with a number of components that communicate with each other to produce a final outcome. All these components can be tuned independently of each other to achieve the maximum possible performance for the scenario desired.</p>
+<div class="section" id="tuned-profile">
+<h3>Tuned profile<a class="headerlink" href="#tuned-profile" title="Permalink to this headline">¶</a></h3>
+<p>Red Hat Enterprise Linux 7 enables the tuned daemon by default during installation.  On bare-metal, it is recommended that Red Hat Satellite 6 and capsule servers run the ‘throughput-performance’ tuned profile. While, if virtualized, they should run the ‘virtual-guest’ profile. If it is not certain the system is currently running the correct profile, check with the ‘tuned-adm active’ command as shown above. More information about tuned is located in the Red Hat Enterprise Linux Performance Tuning Guide:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># service tuned start</span>
+<span class="c1"># chkconfig tuned on</span>
+<span class="n">RHEL</span> <span class="mi">7</span> <span class="p">(</span><span class="n">bare</span><span class="o">-</span><span class="n">metal</span><span class="p">):</span>
+<span class="c1"># tuned-adm profile throughput-performance</span>
+<span class="n">RHEL</span> <span class="mi">7</span> <span class="p">(</span><span class="n">virtual</span> <span class="n">machine</span><span class="p">)</span>
+<span class="c1"># tuned-adm profile virtual-guest</span>
+</pre></div>
+</div>
+<p>Transparent Huge Pages is a memory management technique used by the Linux kernel which reduces the overhead of using Translation Lookaside Buffer (TLB) by using larger sized memory pages. Due to databases having Sparse Memory Access patterns instead of Contiguous Memory access patterns, database workloads often perform poorly when Transparent Huge Pages is enabled.
+To improve performance of MongoDB, Red Hat recommends Transparent Huge Pages be disabled. For details on disabling Transparent Huge Pages, see <a class="reference external" href="https://access.redhat.com/solutions/1320153">Red Hat Solution</a>.</p>
+</div>
+<div class="section" id="apache-httpd-performance-tuning">
+<h3>Apache HTTPD Performance Tuning<a class="headerlink" href="#apache-httpd-performance-tuning" title="Permalink to this headline">¶</a></h3>
+<p>Apache httpd forms a core part of the Satellite and acts as a web server for handling the requests that are being made through the Satellite Web UI or exposed APIs. To increase the concurrency of the operations, httpd forms the first point where tuning can help to boost the performance of the Satellite.</p>
+</div>
+<div class="section" id="configuring-how-many-processes-can-be-launched-by-apache-httpd">
+<h3>Configuring how many processes can be launched by Apache httpd<a class="headerlink" href="#configuring-how-many-processes-can-be-launched-by-apache-httpd" title="Permalink to this headline">¶</a></h3>
+<p>The version of Apache httpd that ships with Red Hat Satellite 6 by default uses prefork request handling mechanism. With the prefork model of handling the requests, httpd will launch a new process to handle the incoming connection by the client.</p>
+<p>When the number of requests to the apache exceed the maximum number of child processes that can be launched to handle the incoming connections, an HTTP 503 Service Unavailable Error is raised by Apache.</p>
+<p>Amidst httpd running out of processes to handle the incoming connections can also result in multiple component failure on the Satellite side due to the dependency of components like Passenger, Pulp on the availability of httpd processes.</p>
+<p>Based on your expected peak load, you might want to modify the configuration of apache prefork to enable it to handle more concurrent requests.</p>
+<p>An example modification to the prefork configuration for a server which may desire to handle 150 concurrent content host registrations to Satellite may look like the configuration file example that follows (see how to use <cite>custom-hiera.yaml</cite> file; this will modify config file /etc/httpd/conf.modules.d/prefork.conf):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">File</span><span class="p">:</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">foreman</span><span class="o">-</span><span class="n">installer</span><span class="o">/</span><span class="n">custom</span><span class="o">-</span><span class="n">hiera</span><span class="o">.</span><span class="n">yaml</span>
+<span class="n">apache</span><span class="p">::</span><span class="n">mod</span><span class="p">::</span><span class="n">prefork</span><span class="p">::</span><span class="n">serverlimit</span><span class="p">:</span> <span class="mi">582</span>
+<span class="n">apache</span><span class="p">::</span><span class="n">mod</span><span class="p">::</span><span class="n">prefork</span><span class="p">::</span><span class="n">maxclients</span><span class="p">:</span> <span class="mi">582</span>
+<span class="n">apache</span><span class="p">::</span><span class="n">mod</span><span class="p">::</span><span class="n">prefork</span><span class="p">::</span><span class="n">startservers</span><span class="p">:</span> <span class="mi">10</span>
+</pre></div>
+</div>
+<p>In the above example, the ServerLimit parameter is set only to be able to raise MaxClients value.</p>
+<p>The MaxClients (see MaxRequestWorker which is a new name in Apache docs) parameter is being used to set the maximum number of child processes that httpd can launch to handle the incoming requests.</p>
+<p>The StartServers parameter defines how many server processes will be launched by default when the httpd process is started.</p>
+<p>Note: While accounting for the limits to be set for the ServerLimit, please take a note of the values for PassengerMaxPoolSize, PassengerMaxRequestQueueSize, number of hosts that may run the client registration in parallel and max number of pulp processes that can be launched. The following formula can be used to estimate the value of ServerLimit parameter:</p>
+<blockquote>
+<div><p>ServerLimit = PassengerMaxPoolSize + PassengerMaxRequestQueueSize + Amount of content hosts being registered in parallel + number of launchable pulp processes</p>
+</div></blockquote>
+<p>For example, an adequate value for ServerLimit on a Satellite 6.5 configuration that has PassengerMaxPoolSize set to 24, PassengerMaxRequestQueueSize set to 400 and expecting to register 150 content hosts in parallel with pulp configuration not being modified, can be calculated as shown below:</p>
+<blockquote>
+<div><p>ServerLimit = 24 + 400 + 150 + 8 = 582</p>
+</div></blockquote>
+</div>
+<div class="section" id="increasing-the-maxopenfiles-limit">
+<h3>Increasing the MaxOpenFiles Limit<a class="headerlink" href="#increasing-the-maxopenfiles-limit" title="Permalink to this headline">¶</a></h3>
+<p>With the tuning in place, apache httpd can easily open a lot of file descriptors on the server which may exceed the default limit of most of the linux systems in place. To avoid any kind of issues that may arise as a result of exceeding max open files limit on the system, please create the following file and directory and set the contents of the file as specified in the below given example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">File</span><span class="p">:</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">systemd</span><span class="o">/</span><span class="n">system</span><span class="o">/</span><span class="n">httpd</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="n">limits</span><span class="o">.</span><span class="n">conf</span>
+<span class="p">[</span><span class="n">Service</span><span class="p">]</span>
+<span class="n">LimitNOFILE</span><span class="o">=</span><span class="mi">640000</span>
+</pre></div>
+</div>
+<p>Once the file has been edited, the following commands need to be run to make the tunings come into effect:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">systemctl</span> <span class="n">daemon</span><span class="o">-</span><span class="n">reload</span>
+<span class="n">foreman</span><span class="o">-</span><span class="n">maintain</span> <span class="n">service</span> <span class="n">restart</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="calculating-the-maximum-open-files-limit-for-qdrouterd">
+<h3>Calculating the maximum open files limit for qdrouterd<a class="headerlink" href="#calculating-the-maximum-open-files-limit-for-qdrouterd" title="Permalink to this headline">¶</a></h3>
+<p>Calculate the limit for open files in qdrouterd using this formula: (Nx3) + 100, where N is the number of content hosts. Each content host may consume up to three file descriptors in the router, and 100 filedescriptors are required to run the router itself.</p>
+<p>The following settings permit Satellite to scale up to 10,000 content hosts.</p>
+</div>
+<div class="section" id="qdrouterd-settings">
+<h3>qdrouterd settings<a class="headerlink" href="#qdrouterd-settings" title="Permalink to this headline">¶</a></h3>
+<p>Add/Update qpid::router::open_file_limit  in custom-hiera.yaml as shown below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">File</span><span class="p">:</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">foreman</span><span class="o">-</span><span class="n">installer</span><span class="o">/</span><span class="n">custom</span><span class="o">-</span><span class="n">hiera</span><span class="o">.</span><span class="n">yaml</span>
+<span class="n">qpid</span><span class="p">::</span><span class="n">router</span><span class="p">::</span><span class="n">open_file_limit</span><span class="p">:</span> <span class="mi">150100</span>
+</pre></div>
+</div>
+<p>Note The change must be applied via:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># satellite-installer</span>
+<span class="c1"># systemctl daemon-reload</span>
+<span class="c1"># foreman-maintain service restart</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="calculating-the-maximum-open-files-limit-for-qpidd">
+<h3>Calculating the maximum open files limit for qpidd<a class="headerlink" href="#calculating-the-maximum-open-files-limit-for-qpidd" title="Permalink to this headline">¶</a></h3>
+<p>Calculate the limit for open files in qpidd using this formula: (Nx4) + 500, where N is the number of content hosts. A single content host can consume up to four file descriptors and 500 file descriptors are required for the operations of Broker (a component of qpidd).</p>
+</div>
+<div class="section" id="qpidd-settings">
+<h3>qpidd settings<a class="headerlink" href="#qpidd-settings" title="Permalink to this headline">¶</a></h3>
+<p>Add/Update qpid::open_file_limit in /etc/foreman-installer/custom-hiera.yaml as shown below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">File</span><span class="p">:</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">foreman</span><span class="o">-</span><span class="n">installer</span><span class="o">/</span><span class="n">custom</span><span class="o">-</span><span class="n">hiera</span><span class="o">.</span><span class="n">yaml</span>
+<span class="n">qpid</span><span class="p">::</span><span class="n">open_file_limit</span><span class="p">:</span> <span class="mi">65536</span>
+</pre></div>
+</div>
+<p>Note The change must be applied via:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># satellite-installer</span>
+<span class="c1"># systemctl daemon-reload</span>
+<span class="c1"># foreman-maintain service restart</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="maximum-asynchronous-input-output-aio-requests">
+<h3>Maximum asynchronous input-output (AIO) requests<a class="headerlink" href="#maximum-asynchronous-input-output-aio-requests" title="Permalink to this headline">¶</a></h3>
+<p>Increase the maximum number of allowable concurrent AIO requests by increasing the kernel parameter <cite>fs.aio-max-nr</cite>.</p>
+<p>Edit configuration file <cite>/etc/sysctl.conf</cite>, setting the value of <cite>fs.aio-max-nr</cite> to the desired maximum.</p>
+<blockquote>
+<div><p>fs.aio-max-nr=23456</p>
+</div></blockquote>
+<p>In this example, 23456 is the maximum number of allowable concurrent AIO requests.</p>
+<p>This number should be bigger than 33 multiplied by the maximum number of the content hosts planned to be registered to Satellite. To apply the changes:</p>
+<blockquote>
+<div><p>sysctl -p</p>
+</div></blockquote>
+<p>Rebooting the machine also ensures that this change is applied.</p>
+</div>
+<div class="section" id="storage-considerations">
+<h3>Storage Considerations<a class="headerlink" href="#storage-considerations" title="Permalink to this headline">¶</a></h3>
+<p>Plan to have enough storage capacity for directory /var/lib/qpidd in advance when you are planning an installation that will use katello-agent extensively. In Red Hat Satellite 6, /var/lib/qpidd requires 2MB disk space per content host. See this <a class="reference external" href="https://bugzilla.redhat.com/show_bug.cgi?id=1366323">bug</a> for more details.</p>
+</div>
+<div class="section" id="mgmt-pub-interval-setting">
+<h3>mgmt-pub-interval setting<a class="headerlink" href="#mgmt-pub-interval-setting" title="Permalink to this headline">¶</a></h3>
+<p>You might see the following error in /var/log/journal in Red Hat Enterprise Linux 7:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">satellite</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span> <span class="n">qpidd</span><span class="p">[</span><span class="mi">92464</span><span class="p">]:</span> <span class="p">[</span><span class="n">Broker</span><span class="p">]</span> <span class="n">error</span> <span class="n">Channel</span> <span class="n">exception</span><span class="p">:</span> <span class="ow">not</span><span class="o">-</span><span class="n">attached</span><span class="p">:</span> <span class="n">Channel</span> <span class="mi">2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">attached</span><span class="p">(</span><span class="o">/</span><span class="n">builddir</span><span class="o">/</span><span class="n">build</span><span class="o">/</span><span class="n">BUILD</span><span class="o">/</span><span class="n">qpid</span><span class="o">-</span><span class="n">cpp</span><span class="o">-</span><span class="mf">0.30</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">qpid</span><span class="o">/</span><span class="n">amqp_0_10</span><span class="o">/</span><span class="n">SessionHandler</span><span class="o">.</span><span class="n">cpp</span><span class="p">:</span> <span class="mi">39</span><span class="p">)</span><span class="n">satellite</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span>    <span class="n">qpidd</span><span class="p">[</span><span class="mi">92464</span><span class="p">]:</span> <span class="p">[</span><span class="n">Protocol</span><span class="p">]</span> <span class="n">error</span> <span class="n">Connectionqpid</span><span class="o">.</span><span class="mf">10.1</span><span class="o">.</span><span class="mf">10.1</span><span class="p">:</span><span class="mi">5671</span><span class="o">-</span><span class="mf">10.1</span><span class="o">.</span><span class="mf">10.1</span><span class="p">:</span><span class="mi">53790</span> <span class="n">timed</span> <span class="n">out</span><span class="p">:</span> <span class="n">closing</span>
+</pre></div>
+</div>
+<p>This error message appears because qpid maintains management objects for queues, sessions, and connections and recycles them every ten seconds by default. The same object with the same ID is created, deleted, and created again. The old management object is not yet purged, which is why qpid throws this error. Here’s a workaround: lower the mgmt-pub-interval parameter from the default 10seconds to something lower. Add it to /etc/qpid/qpidd.conf and restart the qpidd service.  See also <a class="reference external" href="https://bugzilla.redhat.com/show_bug.cgi?id=1335694">Bug 1335694</a> comment 7.</p>
+</div>
+<div class="section" id="passenger-tuning">
+<h3>Passenger Tuning<a class="headerlink" href="#passenger-tuning" title="Permalink to this headline">¶</a></h3>
+<p>Passenger is a ruby application server which is used for serving the Foreman related requests to the clients. Passenger executes as a module inside the Apache httpd2 and handles the incoming requests directed towards the use of Foreman API or Satellite UI.</p>
+<p>For any Satellite configuration that is supposed to handle a large number of clients or frequent operations, it is important for the Passenger to be tuned appropriately.</p>
+<p>The below snippet provides an idea for tuning Passenger (see <cite>how to use custom-hiera.yaml</cite> file; this will modify /etc/httpd/conf.modules.d/passenger_extra.conf file):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">File</span><span class="p">:</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">foreman</span><span class="o">-</span><span class="n">installer</span><span class="o">/</span><span class="n">custom</span><span class="o">-</span><span class="n">hiera</span><span class="o">.</span><span class="n">yaml</span>
+<span class="n">apache</span><span class="p">::</span><span class="n">mod</span><span class="p">::</span><span class="n">passenger</span><span class="p">::</span><span class="n">passenger_max_pool_size</span><span class="p">:</span> <span class="mi">48</span>
+<span class="n">apache</span><span class="p">::</span><span class="n">mod</span><span class="p">::</span><span class="n">passenger</span><span class="p">::</span><span class="n">passenger_max_request_queue_size</span><span class="p">:</span> <span class="mi">400</span>
+</pre></div>
+</div>
+<p>In the above example, we set the tuning for two important keys inside Passenger:</p>
+<p>PassengerMaxPoolSize: The parameter defines how many ruby application instances can be launched by Passenger once the process has started. To calculate an optimal value for the parameter, multiply the total number of VCPUs available in your deployment by 2 and that is the value for the PassengerMaxPoolSize parameter.</p>
+<p>PassengerMaxRequestQueueSize: The PassengerMaxRequestQueueSize parameter defines how many requests can passenger queue for processing. The value for this parameter should never exceed the value of ServerLimit parameter set for the Apache httpd2.</p>
+</div>
+<div class="section" id="foreman-tuning">
+<h3>Foreman Tuning<a class="headerlink" href="#foreman-tuning" title="Permalink to this headline">¶</a></h3>
+<p>Foreman is the central application which provides the majority of the Satellite functionality as well as the GUI of Satellite. Under heavy load, the Foreman might need some amount of scaling up so as to provide adequate response times to the incoming requests.</p>
+<p>Installer option “–foreman-passenger-min-instances 12” (defaults to 1) can be used to tune Foreman application (that will set “PassengerMinInstances” in /etc/httpd/conf.d/05-foreman-ssl.conf file).</p>
+<p>PassengerMinInstances: The configuration key tells how many application instances should be running every time even when no load is being experienced by the application. To calculate an optimal value for the configuration key, divide the value of PassengerMaxPoolSize by 2. One of the repercussions that may be seen with such a tuning is the increased memory usage on the system attributed to the fact of having more foreman instances running during ideal conditions.</p>
+</div>
+<div class="section" id="dynflow-tuning">
+<h3>Dynflow Tuning<a class="headerlink" href="#dynflow-tuning" title="Permalink to this headline">¶</a></h3>
+<p>Dynflow is the workflow management system and task orchestrator which is built as a plugin inside Foreman and is used to execute the different tasks of Satellite in an out-of-order execution manner. Under the conditions when there are a lot of clients checking in on Satellite and running a number of tasks, the Dynflow can take some help from an added tuning specifying how many executors can it launch.</p>
+<p>In Satellite 6.8, Dynflow configuration has been changed as how this is configured entirely and we are working on a new dynflow configuration. Soon, will release a new version of the performance brief with new dynflow configuration. See these <a class="reference external" href="https://gist.github.com/adamruzicka/1991892ce22b18e030f9a4db95406319">examples</a> for more details.</p>
+</div>
+<div class="section" id="postgresql-tuning">
+<h3>PostgreSQL Tuning<a class="headerlink" href="#postgresql-tuning" title="Permalink to this headline">¶</a></h3>
+<p>PostgreSQL is the primary SQL based database that is used by Satellite for the storage of persistent context across a wide variety of tasks that Satellite does. The database sees an extensive usage is usually working on to provide the Satellite with the data which it needs for its smooth functioning. This makes PostgreSQL a heavily used process which if tuned can have a number of benefits on the overall operational response of Satellite.</p>
+<p>The below set of tunings can be applied to PostgreSQL to improve its response times (see <cite>how to use custom-hiera.yaml</cite> file; this will modify /var/lib/pgsql/data/postgresql.conf file):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">File</span><span class="p">:</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">foreman</span><span class="o">-</span><span class="n">installer</span><span class="o">/</span><span class="n">custom</span><span class="o">-</span><span class="n">hiera</span><span class="o">.</span><span class="n">yaml</span>
+<span class="n">postgresql</span><span class="p">::</span><span class="n">server</span><span class="p">::</span><span class="n">config_entries</span><span class="p">:</span>
+  <span class="n">max_connections</span><span class="p">:</span> <span class="mi">1000</span>
+  <span class="n">shared_buffers</span><span class="p">:</span> <span class="mi">2</span><span class="n">GB</span>
+  <span class="n">work_mem</span><span class="p">:</span> <span class="mi">8</span><span class="n">MB</span>
+  <span class="n">autovacuum_vacuum_cost_limit</span><span class="p">:</span> <span class="mi">2000</span>
+</pre></div>
+</div>
+<p>In the above tuning configuration, there are a certain set of keys which we have altered:</p>
+<p>max_connections: The key defines the maximum number of connections that can be accepted by the PostgreSQL processes that are running. An optimal value for the parameter will be equal to the nearest multiple of 100 of the ServerLimit value of Apache httpd2 multiplied by 2. For example, if ServerLimit is set to 582, we can set the max_connections to 1000.</p>
+<p>shared_buffers: The shared buffers define the memory used by all the active connections inside postgresql to store the data for the different database operations. An optimal value for this will vary between 2 GB to a maximum of 25% of your total system memory depending upon the frequency of the operations being conducted on Satellite.</p>
+<p>work_mem: The work_mem is the memory that is allocated on per process basis for Postgresql and is used to store the intermediate results of the operations that are being performed by the process. Setting this value to 8 MB should be more than enough for most of the intensive operations on Satellite.</p>
+<p>autovacuum_vacuum_cost_limit: The key defines the cost limit value for the vacuuming operation inside the autovacuum process to clean up the dead tuples inside the database relations. The cost limit defines the number of tuples that can be processed in a single run by the process. An optimal value for this is 2000 based on the general load that Satellite pushes on the PostgreSQL server process.</p>
+<p>Note - With the upgrade to Postgres 12, ‘checkpoint_segments’ configuration is not supported. For more details, please refer to this <a class="reference external" href="https://bugzilla.redhat.com/show_bug.cgi?id=1867311#c12">bugzilla</a> .</p>
+</div>
+<div class="section" id="benchmarking-raw-db-performance">
+<h3>Benchmarking raw DB performance<a class="headerlink" href="#benchmarking-raw-db-performance" title="Permalink to this headline">¶</a></h3>
+<p>To get a list of the top table sizes in disk space for both Candlepin and Foreman, check <a class="reference external" href="https://github.com/RedHatSatellite/satellite-support/blob/master/postgres-size-report">postgres-size-report</a> script in <a class="reference external" href="https://github.com/RedHatSatellite/satellite-support">satellite-support</a>  git repository.</p>
+<p>PGbench utility (note you may need to resize PostgreSQL data directory /var/lib/pgsql/ directory to 100GB or what does benchmark take to run) might be used to measure PostgreSQL performance on your system. Use yum install postgresql-contrib to install it. Some resources are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/RedHatSatellite/satellite-support">https://github.com/RedHatSatellite/satellite-support</a></p></li>
+</ul>
+</div></blockquote>
+<p>Choice of filesystem for PostgreSQL data directory might matter as well:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://blog.pgaddict.com/posts/postgresql-performance-on-ext4-and-xfs">https://blog.pgaddict.com/posts/postgresql-performance-on-ext4-and-xfs</a></p></li>
+</ul>
+</div></blockquote>
+<p>Note:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Never do any testing on production system and without valid backup.</p></li>
+<li><p>Before you start testing, see how big the database files are. Testing with a really small database would not produce any meaningful results. E.g. if the DB is only 20G and the buffer pool is 32G, it won’t show problems with large number of connections because the data will be completely buffered.</p></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="mongodb-tuning">
+<h3>MongoDb Tuning<a class="headerlink" href="#mongodb-tuning" title="Permalink to this headline">¶</a></h3>
+<p>Under certain circumstances, mongod consumes randomly high memory (up to 1/2 of all RAM) and this aggressive memory usage limits other processes or can cause OOM killer to kill mongod. In order to overcome this situation, tune the cache size by referring the following steps:</p>
+<p><strong>1.</strong> Update custom-hiera.yaml:</p>
+<p>Edit /etc/foreman-installer/custom-hiera.yaml and add the entry below inserting the value that is 20% of the physical RAM while keeping in mind the <a class="reference external" href="https://access.redhat.com/documentation/en-us/red_hat_satellite/6.7/html/installing_satellite_server_from_a_connected_network/preparing_your_environment_for_installation#hardware_storage_prerequisites">guidlines</a> in this case, approximately 6GB for a 32GB server. Please note the formatting of the second line and the indent:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mongodb</span><span class="p">::</span><span class="n">server</span><span class="p">::</span><span class="n">config_data</span><span class="p">:</span>
+ <span class="n">storage</span><span class="o">.</span><span class="n">wiredTiger</span><span class="o">.</span><span class="n">engineConfig</span><span class="o">.</span><span class="n">cacheSizeGB</span><span class="p">:</span> <span class="mi">6</span>
+</pre></div>
+</div>
+<p><strong>2.</strong> Run installer to apply changes:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># satellite-installer</span>
+</pre></div>
+</div>
+<p>For more details, please refer to this Kbase <a class="reference external" href="https://access.redhat.com/solutions/4505561">article</a>.</p>
+</div>
+<div class="section" id="benchmarking-raw-performance">
+<h3>Benchmarking raw performance<a class="headerlink" href="#benchmarking-raw-performance" title="Permalink to this headline">¶</a></h3>
+<p>To get a size report of MongoDB, use <a class="reference external" href="https://github.com/RedHatSatellite/satellite-support/blob/master/mongo-size-report">mongo-size-report</a> from <a class="reference external" href="https://github.com/RedHatSatellite/satellite-support/">satellite-support</a>  repository.</p>
+<p>Utility used for checking IO speed specific to MongoDB:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://www.mongodb.com/blog/post/checking-disk-performance-with-the-mongoperf">https://www.mongodb.com/blog/post/checking-disk-performance-with-the-mongoperf</a></p></li>
+</ul>
+</div></blockquote>
+<p>For MongoDB benchmark meant to run on (stage) Satellite installs, check <a class="reference external" href="https://github.com/RedHatSatellite/satellite-support/blob/master/mongo-benchmark">mongo-benchmark</a> tool in <a class="reference external" href="https://github.com/RedHatSatellite/satellite-support">satellite-support</a> git repository.</p>
+<p>Depending on a disk drive type, file system choice (ext4 or xfs) for MongoDB storage directory might be important:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://scalegrid.io/blog/xfs-vs-ext4-comparing-mongodb-performance-on-aws-ec2/">https://scalegrid.io/blog/xfs-vs-ext4-comparing-mongodb-performance-on-aws-ec2/</a></p></li>
+</ul>
+</div></blockquote>
+<p>Note:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Never do any testing on production system and without valid backup.</p></li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">Satellite 6 Performance Tuning Guide</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html#document-authors">Authors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html#document-copyright">Legal notice</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html#document-abstract">Abstract</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html#document-introduction">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html#document-system-requirements">System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html#document-top-performance-considerations">Top Performance Considerations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html#document-configuring-environment">Configuring your environment for Performance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html#document-satellite-configuration-tuning">Satellite Configuration Tuning</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Red Hat.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
