@@ -348,18 +348,84 @@ To improve performance of MongoDB, Red Hat recommends Transparent Huge Pages be 
 <h4>Threads min effects<a class="headerlink" href="#threads-min-effects" title="Permalink to this headline">¶</a></h4>
 <p>Less threads will lead to more memory usage for different scales on the Satellite server.</p>
 <p>For example, we have compared these two setups:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Satellite VM with 8 CPUs, 40 GB RAM</p></th>
+<th class="head"><p>Satellite VM with 8 CPUs, 40 GB RAM</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>–foreman-service-puma-threads-min=0</p></td>
+<td><p>–foreman-service-puma-threads-min=16</p></td>
+</tr>
+<tr class="row-odd"><td><p>–foreman-service-puma-threads-max=16</p></td>
+<td><p>–foreman-service-puma-threads-max=16</p></td>
+</tr>
+<tr class="row-even"><td><p>–foreman-service-puma-workers=2</p></td>
+<td><p>–foreman-service-puma-workers=2</p></td>
+</tr>
+</tbody>
+</table>
 <p>When we tune the puma server with t_min=16 puma will consume about 12% less memory as compared to t_min=0.</p>
 </div>
 <div class="section" id="setting-threads-min-max-workers">
 <h4>Setting threads min, max &amp; workers<a class="headerlink" href="#setting-threads-min-max-workers" title="Permalink to this headline">¶</a></h4>
 <p>More workers will allow for lower time to register hosts in parallel.</p>
 <p>For example, we have compared these two setups:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Satellite VM with 8 CPUs, 40 GB RAM</p></th>
+<th class="head"><p>Satellite VM with 8 CPUs, 40 GB RAM</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>–foreman-service-puma-threads-min=16</p></td>
+<td><p>–foreman-service-puma-threads-min=8</p></td>
+</tr>
+<tr class="row-odd"><td><p>–foreman-service-puma-threads-max=16</p></td>
+<td><p>–foreman-service-puma-threads-max=8</p></td>
+</tr>
+<tr class="row-even"><td><p>–foreman-service-puma-workers=2</p></td>
+<td><p>–foreman-service-puma-workers=4</p></td>
+</tr>
+</tbody>
+</table>
 <p>In the second case with more workers but the same total number of threads, we have seen about 11% of speedup in highly concurrent registrations scenario. Moreover, adding more workers did not consume more cpu and memory but will get more performance.</p>
 </div>
 <div class="section" id="setting-right-number-of-workers-for-different-number-of-cpus">
 <h4>Setting right number of workers for different number of CPUs<a class="headerlink" href="#setting-right-number-of-workers-for-different-number-of-cpus" title="Permalink to this headline">¶</a></h4>
 <p>If you have enough CPUs, adding more workers adds more performance.</p>
 <p>For example, we have compared Satellite setups with 8 and 16 CPUs.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 51%" />
+<col style="width: 49%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Satellite VM with 8 CPUs, 40 GB RAM</p></th>
+<th class="head"><p>Satellite VM with 16 CPUs, 40 GB RAM</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>–foreman-service-puma-threads-min=16</p></td>
+<td><p>–foreman-service-puma-threads-min=16</p></td>
+</tr>
+<tr class="row-odd"><td><p>–foreman-service-puma-threads-max=16</p></td>
+<td><p>–foreman-service-puma-threads-max=16</p></td>
+</tr>
+<tr class="row-even"><td><p>–foreman-service-puma-workers=2,4,8 and 16</p></td>
+<td><p>–foreman-service-puma-workers=2,4,8 and 16</p></td>
+</tr>
+</tbody>
+</table>
 <p>In 8 CPUs setup, changing the number of workers from 2 to 16, improved concurrent registration time by 36%. In 16 CPU setup, the same change caused 55% improvement.</p>
 <p>Adding more workers can also help with total registration concurrency Satellite can handle. In our measurements, setups with 2 workers were able to handle up to 480 concurrent registrations, but adding more workers improved the situation.</p>
 </div>
