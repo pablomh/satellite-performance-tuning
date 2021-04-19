@@ -45,7 +45,7 @@
 </div>
 <span id="document-copyright"></span><div class="section" id="legal-notice">
 <h2>Legal notice<a class="headerlink" href="#legal-notice" title="Permalink to this headline">¶</a></h2>
-<p>Copyright © 2020 Red Hat, Inc.</p>
+<p>Copyright © 2021 Red Hat, Inc.</p>
 <p>The text of and illustrations in this document are licensed by Red Hat under a Creative Commons Attribution–Share Alike 3.0 Unported license (“CC-BY-SA”).</p>
 <p>An explanation of CC-BY-SA is available at <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">http://creativecommons.org/licenses/by-sa/3.0/</a></p>
 <p>In accordance with CC-BY-SA, if you distribute this document or an adaptation of it, you must provide the URL for the original version. Red Hat, as the licensor of this document, waives the right to enforce, and agrees not to assert, Section 4d of CC-BY-SA to the fullest extent permitted by applicable law. Red Hat, Red Hat Enterprise Linux, the Shadowman logo, JBoss, OpenShift, Fedora, the Infinity logo, and RHCE are trademarks of Red Hat, Inc., registered in the United States and other countries.</p>
@@ -59,21 +59,21 @@
 </div>
 <span id="document-abstract"></span><div class="section" id="abstract">
 <h2>Abstract<a class="headerlink" href="#abstract" title="Permalink to this headline">¶</a></h2>
-<p>The performance tuning guide aims to cover the set of tunings and tips that can be used as a reference to scale up your Red Hat Satellite 6.8 environment.</p>
+<p>The performance tuning guide aims to cover the set of tunings and tips that can be used as a reference to scale up your Red Hat Satellite 6.9 environment.</p>
 </div>
 <span id="document-introduction"></span><div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>This document aims to provide the guidelines for tuning Red Hat Satellite 6 for performance and scalability. Although a lot of care has been given to make the content applicable to cover a wide set of use cases, if there is some use case which has not been covered, please feel free to reach out to Red Hat for support for the undocumented use case.</p>
 <p>Red Hat Satellite is a complete system management product that enables system administrators to manage the full life cycle of Red Hat product deployments. Red Hat Satellite can manage these deployments across physical, virtual and private clouds. Red Hat Satellite delivers system provisioning, configuration management, software management, subscription management, and does so while maintaining high scalability and security.</p>
 <p>For more information on Red Hat Satellite 6, please visit:</p>
-<p><a class="reference external" href="https://access.redhat.com/documentation/en-us/red_hat_satellite/6.8/">https://access.redhat.com/documentation/en-us/red_hat_satellite/6.8/</a></p>
+<p><a class="reference external" href="https://access.redhat.com/documentation/en-us/red_hat_satellite/6.9/">https://access.redhat.com/documentation/en-us/red_hat_satellite/6.9/</a></p>
 </div>
 <span id="document-system-requirements"></span><div class="section" id="system-requirements">
 <h2>System Requirements<a class="headerlink" href="#system-requirements" title="Permalink to this headline">¶</a></h2>
-<p>For details of Red Hat Satellite 6 hardware and software requirements, please take a look at <a class="reference external" href="https://access.redhat.com/documentation/en-us/red_hat_satellite/6.8/html/installing_satellite_server_from_a_connected_network/preparing-environment-for-satellite-installation#system-requirements_satellite">Preparing your environment for installation</a>, inside the installation guide.</p>
+<p>For details of Red Hat Satellite 6 hardware and software requirements, please take a look at <a class="reference external" href="https://access.redhat.com/documentation/en-us/red_hat_satellite/6.9/html/installing_satellite_server_from_a_connected_network/preparing-environment-for-satellite-installation#system-requirements_satellite">Preparing your environment for installation</a>, inside the installation guide.</p>
 <div class="section" id="quick-tuning-guide">
 <h3>Quick Tuning Guide<a class="headerlink" href="#quick-tuning-guide" title="Permalink to this headline">¶</a></h3>
-<p>Users who wish to tune their Satellite based on expected managed host counts and hardware allocation can utilize the built in tuning profiles included in Satellite 6.8 and later that are available via the installation routine’s new tuning flag (see <a class="reference external" href="https://github.com/RedHatSatellite/satellite-support/tree/master/tuning-profiles">information in installation guide</a>):</p>
+<p>Users who wish to tune their Satellite based on expected managed host counts and hardware allocation can utilize the built in tuning profiles included in Satellite 6.9 and later that are available via the installation routine’s new tuning flag (see <a class="reference external" href="https://github.com/RedHatSatellite/satellite-support/tree/master/tuning-profiles">information in installation guide</a>):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># satellite-installer --help</span>
 <span class="n">Usage</span><span class="p">:</span>
     <span class="n">satellite</span><span class="o">-</span><span class="n">installer</span> <span class="p">[</span><span class="n">OPTIONS</span><span class="p">]</span>
@@ -140,7 +140,7 @@
 <p>This is the list of things that you can do to improve the performance and scalability of Red Hat Satellite 6:</p>
 <ul class="simple">
 <li><p>Configuring httpd</p></li>
-<li><p>Configuring passenger to increase concurrency</p></li>
+<li><p>Configuring puma to increase concurrency</p></li>
 <li><p>Configure candlepin</p></li>
 <li><p>Configure pulp</p></li>
 <li><p>Configure Foreman’s performance and scalability</p></li>
@@ -161,7 +161,7 @@
 <h2>Configuring your environment for Performance<a class="headerlink" href="#configuring-your-environment-for-performance" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="cpu">
 <h3>CPU<a class="headerlink" href="#cpu" title="Permalink to this headline">¶</a></h3>
-<p>The more physical cores that are available to Satellite 6.8, the higher throughput can be achieved for the tasks. Some of the Satellite components such as Puppet, MongoDB, PostgreSQL are CPU intensive applications and can really benefit from the higher number of available CPU cores.</p>
+<p>The more physical cores that are available to Satellite 6.9, the higher throughput can be achieved for the tasks. Some of the Satellite components such as Puppet, MongoDB, PostgreSQL are CPU intensive applications and can really benefit from the higher number of available CPU cores.</p>
 </div>
 <div class="section" id="memory">
 <h3>Memory<a class="headerlink" href="#memory" title="Permalink to this headline">¶</a></h3>
@@ -348,25 +348,67 @@ To improve performance of MongoDB, Red Hat recommends Transparent Huge Pages be 
 </div>
 <p>This error message appears because qpid maintains management objects for queues, sessions, and connections and recycles them every ten seconds by default. The same object with the same ID is created, deleted, and created again. The old management object is not yet purged, which is why qpid throws this error. Here’s a workaround: lower the mgmt-pub-interval parameter from the default 10seconds to something lower. Add it to /etc/qpid/qpidd.conf and restart the qpidd service.  See also <a class="reference external" href="https://bugzilla.redhat.com/show_bug.cgi?id=1335694">Bug 1335694</a> comment 7.</p>
 </div>
-<div class="section" id="passenger-tuning">
-<h3>Passenger Tuning<a class="headerlink" href="#passenger-tuning" title="Permalink to this headline">¶</a></h3>
-<p>Passenger is a ruby application server which is used for serving the Foreman related requests to the clients. Passenger executes as a module inside the Apache httpd2 and handles the incoming requests directed towards the use of Foreman API or Satellite UI.</p>
-<p>For any Satellite configuration that is supposed to handle a large number of clients or frequent operations, it is important for the Passenger to be tuned appropriately.</p>
-<p>The below snippet provides an idea for tuning Passenger (see <cite>how to use custom-hiera.yaml</cite> file; this will modify /etc/httpd/conf.modules.d/passenger_extra.conf file):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">File</span><span class="p">:</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">foreman</span><span class="o">-</span><span class="n">installer</span><span class="o">/</span><span class="n">custom</span><span class="o">-</span><span class="n">hiera</span><span class="o">.</span><span class="n">yaml</span>
-<span class="n">apache</span><span class="p">::</span><span class="n">mod</span><span class="p">::</span><span class="n">passenger</span><span class="p">::</span><span class="n">passenger_max_pool_size</span><span class="p">:</span> <span class="mi">48</span>
-<span class="n">apache</span><span class="p">::</span><span class="n">mod</span><span class="p">::</span><span class="n">passenger</span><span class="p">::</span><span class="n">passenger_max_request_queue_size</span><span class="p">:</span> <span class="mi">400</span>
-</pre></div>
+<div class="section" id="puma-tuning">
+<h3>Puma Tuning<a class="headerlink" href="#puma-tuning" title="Permalink to this headline">¶</a></h3>
+<p>Puma is a ruby application server which is used for serving the Foreman related requests to the clients.</p>
+<p>For any Satellite configuration that is supposed to handle a large number of clients or frequent operations, it is important for the Puma to be tuned appropriately.</p>
 </div>
-<p>In the above example, we set the tuning for two important keys inside Passenger:</p>
-<p>PassengerMaxPoolSize: The parameter defines how many ruby application instances can be launched by Passenger once the process has started. To calculate an optimal value for the parameter, multiply the total number of VCPUs available in your deployment by 2 and that is the value for the PassengerMaxPoolSize parameter.</p>
-<p>PassengerMaxRequestQueueSize: The PassengerMaxRequestQueueSize parameter defines how many requests can passenger queue for processing. The value for this parameter should never exceed the value of ServerLimit parameter set for the Apache httpd2.</p>
+<div class="section" id="threads-min-effects">
+<h3>Threads min effects<a class="headerlink" href="#threads-min-effects" title="Permalink to this headline">¶</a></h3>
+<p>Less threads will lead to more memory usage for different scales on the Satellite server.</p>
+<p>For example, we have compared these two setups:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 48%" />
+<col style="width: 53%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td colspan="2"><p>Satellite VM with 8 CPUs, 40 GB RAM        Satellite VM with 8 CPUs, 40 GB RAM</p></td>
+</tr>
+<tr class="row-even"><td><p>–foreman-service-puma-threads-min=0</p></td>
+<td><p>–foreman-service-puma-threads-min=16</p></td>
+</tr>
+<tr class="row-odd"><td><p>–foreman-service-puma-threads-max=16</p></td>
+<td><p>–foreman-service-puma-threads-max=16</p></td>
+</tr>
+<tr class="row-even"><td><p>–foreman-service-puma-workers=2</p></td>
+<td><p>–foreman-service-puma-workers=2</p></td>
+</tr>
+</tbody>
+</table>
+<p>When we tune the puma server with t_min=16 puma will consume about 12% less memory as compared to t_min=0.</p>
 </div>
-<div class="section" id="foreman-tuning">
-<h3>Foreman Tuning<a class="headerlink" href="#foreman-tuning" title="Permalink to this headline">¶</a></h3>
-<p>Foreman is the central application which provides the majority of the Satellite functionality as well as the GUI of Satellite. Under heavy load, the Foreman might need some amount of scaling up so as to provide adequate response times to the incoming requests.</p>
-<p>Installer option “–foreman-passenger-min-instances 12” (defaults to 1) can be used to tune Foreman application (that will set “PassengerMinInstances” in /etc/httpd/conf.d/05-foreman-ssl.conf file).</p>
-<p>PassengerMinInstances: The configuration key tells how many application instances should be running every time even when no load is being experienced by the application. To calculate an optimal value for the configuration key, divide the value of PassengerMaxPoolSize by 2. One of the repercussions that may be seen with such a tuning is the increased memory usage on the system attributed to the fact of having more foreman instances running during ideal conditions.</p>
+<div class="section" id="setting-threads-min-max-workers">
+<h3>Setting threads min, max &amp; workers<a class="headerlink" href="#setting-threads-min-max-workers" title="Permalink to this headline">¶</a></h3>
+<p>More workers will allow for lower time to register hosts in parallel.</p>
+<p>For example, we have compared these two setups:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 48%" />
+<col style="width: 53%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td colspan="2"><p>Satellite VM with 8 CPUs, 40 GB RAM        Satellite VM with 8 CPUs, 40 GB RAM</p></td>
+</tr>
+<tr class="row-even"><td><p>–foreman-service-puma-threads-min=16</p></td>
+<td><p>–foreman-service-puma-threads-min=8</p></td>
+</tr>
+<tr class="row-odd"><td><p>–foreman-service-puma-threads-max=16</p></td>
+<td><p>–foreman-service-puma-threads-max=8</p></td>
+</tr>
+<tr class="row-even"><td><p>–foreman-service-puma-workers=2</p></td>
+<td><p>–foreman-service-puma-workers=2</p></td>
+</tr>
+</tbody>
+</table>
+<p>In the second case with more workers but the same total number of threads, we have seen about 11% of speedup in highly concurrent registrations scenario. Moreover, adding more workers did not consume more cpu and memory but will get more performance.</p>
+</div>
+<div class="section" id="setting-right-number-of-workers-for-different-number-of-cpus">
+<h3>Setting right number of workers for different number of CPUs<a class="headerlink" href="#setting-right-number-of-workers-for-different-number-of-cpus" title="Permalink to this headline">¶</a></h3>
+<p>If you have enough CPUs, adding more workers adds more performance.</p>
+<p>For example, we have compared Satellite setups with 8 and 16 CPUs.</p>
+<p>In 8 CPUs setup, changing the number of workers from 2 to 16, improved concurrent registration time by 36%. In 16 CPU setup, the same change caused 55% improvement.</p>
+<p>Adding more workers can also help with total registration concurrency Satellite can handle. In our measurements, setups with 2 workers were able to handle up to 480 concurrent registrations, but adding more workers improved the situation.</p>
 </div>
 <div class="section" id="dynflow-tuning">
 <h3>Dynflow Tuning<a class="headerlink" href="#dynflow-tuning" title="Permalink to this headline">¶</a></h3>
@@ -419,7 +461,7 @@ To improve performance of MongoDB, Red Hat recommends Transparent Huge Pages be 
 <h3>MongoDb Tuning<a class="headerlink" href="#mongodb-tuning" title="Permalink to this headline">¶</a></h3>
 <p>Under certain circumstances, mongod consumes randomly high memory (up to 1/2 of all RAM) and this aggressive memory usage limits other processes or can cause OOM killer to kill mongod. In order to overcome this situation, tune the cache size by referring the following steps:</p>
 <p><strong>1.</strong> Update custom-hiera.yaml:</p>
-<p>Edit /etc/foreman-installer/custom-hiera.yaml and add the entry below inserting the value that is 20% of the physical RAM while keeping in mind the <a class="reference external" href="https://access.redhat.com/documentation/en-us/red_hat_satellite/6.7/html/installing_satellite_server_from_a_connected_network/preparing_your_environment_for_installation#hardware_storage_prerequisites">guidlines</a> in this case, approximately 6GB for a 32GB server. Please note the formatting of the second line and the indent:</p>
+<p>Edit /etc/foreman-installer/custom-hiera.yaml and add the entry below inserting the value that is 20% of the physical RAM while keeping in mind the <a class="reference external" href="https://access.redhat.com/documentation/en-us/red_hat_satellite/6.7/html/installing_satellite_server_from_a_connected_network/preparing-environment-for-satellite-installation#system-requirements_satellite">guidlines</a> in this case, approximately 6GB for a 32GB server. Please note the formatting of the second line and the indent:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mongodb</span><span class="p">::</span><span class="n">server</span><span class="p">::</span><span class="n">config_data</span><span class="p">:</span>
  <span class="n">storage</span><span class="o">.</span><span class="n">wiredTiger</span><span class="o">.</span><span class="n">engineConfig</span><span class="o">.</span><span class="n">cacheSizeGB</span><span class="p">:</span> <span class="mi">6</span>
 </pre></div>
@@ -506,7 +548,7 @@ To improve performance of MongoDB, Red Hat recommends Transparent Huge Pages be 
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2020, Red Hat.
+      &copy;2021, Red Hat.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
