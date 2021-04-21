@@ -130,6 +130,7 @@
 <ol class="arabic simple">
 <li><p>Determine the profile you wish to use</p></li>
 <li><p>Run <cite>satellite-installer –tuning large</cite>. This will apply to the chosen tuning profile.</p></li>
+<li><p>The Ruby app server will need to be tuned directly via the Puma Tuning section: <a class="reference internal" href="index.html#puma-tuning"><span class="std std-ref">Puma Tuning</span></a>.</p></li>
 <li><p>Resume operations</p></li>
 </ol>
 <p>NOTE: The specific tuning settings for each profile can be viewed in the configuration files contained in <cite>/usr/share/foreman-installer/config/foreman.hiera/tuning/sizes</cite></p>
@@ -341,7 +342,7 @@ To improve performance of MongoDB, Red Hat recommends Transparent Huge Pages be 
 <p>This error message appears because qpid maintains management objects for queues, sessions, and connections and recycles them every ten seconds by default. The same object with the same ID is created, deleted, and created again. The old management object is not yet purged, which is why qpid throws this error. Here’s a workaround: lower the mgmt-pub-interval parameter from the default 10seconds to something lower. Add it to /etc/qpid/qpidd.conf and restart the qpidd service.  See also <a class="reference external" href="https://bugzilla.redhat.com/show_bug.cgi?id=1335694">Bug 1335694</a> comment 7.</p>
 </div>
 <div class="section" id="puma-tuning">
-<h3>Puma Tuning<a class="headerlink" href="#puma-tuning" title="Permalink to this headline">¶</a></h3>
+<span id="id1"></span><h3>Puma Tuning<a class="headerlink" href="#puma-tuning" title="Permalink to this headline">¶</a></h3>
 <p>Puma is a ruby application server which is used for serving the Foreman related requests to the clients.</p>
 <p>For any Satellite configuration that is supposed to handle a large number of clients or frequent operations, it is important for the Puma to be tuned appropriately.</p>
 <div class="section" id="threads-min-effects">
