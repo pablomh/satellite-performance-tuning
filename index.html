@@ -434,7 +434,7 @@ To improve performance of MongoDB, Red Hat recommends Transparent Huge Pages be 
 <div class="section" id="dynflow-tuning">
 <h3>Dynflow Tuning<a class="headerlink" href="#dynflow-tuning" title="Permalink to this headline">¶</a></h3>
 <p>Dynflow is the workflow management system and task orchestrator which is built as a plugin inside Foreman and is used to execute the different tasks of Satellite in an out-of-order execution manner. Under the conditions when there are a lot of clients checking in on Satellite and running a number of tasks, the Dynflow can take some help from an added tuning specifying how many executors can it launch.</p>
-<p>In Satellite 6.8, Dynflow configuration has been changed as how this is configured entirely and we are working on a new dynflow configuration. Soon, will release a new version of the performance brief with new dynflow configuration. See these <a class="reference external" href="https://gist.github.com/adamruzicka/1991892ce22b18e030f9a4db95406319">examples</a> for more details.</p>
+<p>The following configuration snippet provides more information about the tunings involved related to Dynflow: <a class="reference external" href="https://satellite.example.com/foreman_tasks/sidekiq">https://satellite.example.com/foreman_tasks/sidekiq</a></p>
 </div>
 <div class="section" id="postgresql-tuning">
 <h3>PostgreSQL Tuning<a class="headerlink" href="#postgresql-tuning" title="Permalink to this headline">¶</a></h3>
