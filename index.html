@@ -4,11 +4,12 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Satellite 6 Performance Tuning Guide documentation</title>
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
@@ -31,17 +32,17 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="satellite-6-9-performance-tuning-guide">
+  <section id="satellite-6-9-performance-tuning-guide">
 <h1>Satellite 6.9 Performance Tuning Guide<a class="headerlink" href="#satellite-6-9-performance-tuning-guide" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
-<span id="document-authors"></span><div class="section" id="authors">
+<span id="document-authors"></span><section id="authors">
 <h2>Authors<a class="headerlink" href="#authors" title="Permalink to this headline">¶</a></h2>
 <p>Pradeep Surisetty &lt;<a class="reference external" href="mailto:psuriset&#37;&#52;&#48;redhat&#46;com">psuriset<span>&#64;</span>redhat<span>&#46;</span>com</a>&gt;</p>
 <p>Jan Hutar &lt;<a class="reference external" href="mailto:jhutar&#37;&#52;&#48;redhat&#46;com">jhutar<span>&#64;</span>redhat<span>&#46;</span>com</a>&gt;</p>
 <p>Mike McCune &lt;<a class="reference external" href="mailto:mmccune&#37;&#52;&#48;redhat&#46;com">mmccune<span>&#64;</span>redhat<span>&#46;</span>com</a>&gt;</p>
 <p>Imaanpreet Kaur &lt;<a class="reference external" href="mailto:ikaur&#37;&#52;&#48;redhat&#46;com">ikaur<span>&#64;</span>redhat<span>&#46;</span>com</a>&gt;</p>
-</div>
-<span id="document-copyright"></span><div class="section" id="legal-notice">
+</section>
+<span id="document-copyright"></span><section id="legal-notice">
 <h2>Legal notice<a class="headerlink" href="#legal-notice" title="Permalink to this headline">¶</a></h2>
 <p>Copyright © 2021 Red Hat, Inc.</p>
 <p>The text of and illustrations in this document are licensed by Red Hat under a Creative Commons Attribution–Share Alike 3.0 Unported license (“CC-BY-SA”).</p>
@@ -54,22 +55,22 @@
 <p>Node.js ® is an official trademark of Joyent. Red Hat Software Collections is not formally related to or endorsed by the official Joyent Node.js open source or commercial project.</p>
 <p>The OpenStack ® Word Mark and OpenStack logo are either registered trademarks/service marks or trademarks/service marks of the OpenStack Foundation, in the United States and other countries and are used with the OpenStack Foundation’s permission. We are not affiliated with, endorsed or sponsored by the OpenStack Foundation, or the OpenStack community.</p>
 <p>All other trademarks are the property of their respective owners.</p>
-</div>
-<span id="document-abstract"></span><div class="section" id="abstract">
+</section>
+<span id="document-abstract"></span><section id="abstract">
 <h2>Abstract<a class="headerlink" href="#abstract" title="Permalink to this headline">¶</a></h2>
 <p>The performance tuning guide aims to cover the set of tunings and tips that can be used as a reference to scale up your Red Hat Satellite 6.9 environment.</p>
-</div>
-<span id="document-introduction"></span><div class="section" id="introduction">
+</section>
+<span id="document-introduction"></span><section id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>This document aims to provide the guidelines for tuning Red Hat Satellite 6 for performance and scalability. Although a lot of care has been given to make the content applicable to cover a wide set of use cases, if there is some use case which has not been covered, please feel free to reach out to Red Hat for support for the undocumented use case.</p>
 <p>Red Hat Satellite is a complete system management product that enables system administrators to manage the full life cycle of Red Hat product deployments. Red Hat Satellite can manage these deployments across physical, virtual and private clouds. Red Hat Satellite delivers system provisioning, configuration management, software management, subscription management, and does so while maintaining high scalability and security.</p>
 <p>For more information on Red Hat Satellite 6, please visit:</p>
 <p><a class="reference external" href="https://access.redhat.com/documentation/en-us/red_hat_satellite/6.9/">https://access.redhat.com/documentation/en-us/red_hat_satellite/6.9/</a></p>
-</div>
-<span id="document-system-requirements"></span><div class="section" id="system-requirements">
+</section>
+<span id="document-system-requirements"></span><section id="system-requirements">
 <h2>System Requirements<a class="headerlink" href="#system-requirements" title="Permalink to this headline">¶</a></h2>
 <p>For details of Red Hat Satellite 6 hardware and software requirements, please take a look at <a class="reference external" href="https://access.redhat.com/documentation/en-us/red_hat_satellite/6.9/html/installing_satellite_server_from_a_connected_network/preparing-environment-for-satellite-installation#system-requirements_satellite">Preparing your environment for installation</a>, inside the installation guide.</p>
-<div class="section" id="quick-tuning-guide">
+<section id="quick-tuning-guide">
 <h3>Quick Tuning Guide<a class="headerlink" href="#quick-tuning-guide" title="Permalink to this headline">¶</a></h3>
 <p>Users who wish to tune their Satellite based on expected managed host counts and hardware allocation can utilize the built in tuning profiles included in Satellite 6.9 and later that are available via the installation routine’s new tuning flag (see <a class="reference external" href="https://github.com/RedHatSatellite/satellite-support/tree/master/tuning-profiles">information in installation guide</a>):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># satellite-installer --help</span>
@@ -131,10 +132,12 @@
 <li><p>The Ruby app server will need to be tuned directly via the Puma Tuning section: <a class="reference internal" href="index.html#puma-tuning"><span class="std std-ref">Puma Tuning</span></a>.</p></li>
 <li><p>Resume operations</p></li>
 </ol>
-<p>NOTE: The specific tuning settings for each profile can be viewed in the configuration files contained in <cite>/usr/share/foreman-installer/config/foreman.hiera/tuning/sizes</cite></p>
-</div>
-</div>
-<span id="document-top-performance-considerations"></span><div class="section" id="top-performance-considerations">
+<p>NOTE:</p>
+<p>1.The specific tuning settings for each profile can be viewed in the configuration files contained in <cite>/usr/share/foreman-installer/config/foreman.hiera/tuning/sizes</cite></p>
+<p>2.Moreover, tuning Profiles are not covering <a class="reference external" href="https://github.com/RedHatSatellite/satellite-performance-tuning/blob/devel/docs/satellite-configuration-tuning.rst#puma-tuning">puma tuning</a> as of now but we are working on it. Please refer to this <a class="reference external" href="https://bugzilla.redhat.com/show_bug.cgi?id=1959691">bug</a> for more details.</p>
+</section>
+</section>
+<span id="document-top-performance-considerations"></span><section id="top-performance-considerations">
 <h2>Top Performance Considerations<a class="headerlink" href="#top-performance-considerations" title="Permalink to this headline">¶</a></h2>
 <p>This is the list of things that you can do to improve the performance and scalability of Red Hat Satellite 6:</p>
 <ul class="simple">
@@ -155,21 +158,21 @@
 <li><p>Ensure the system requirements are met</p></li>
 <li><p>Improve the environment for remote execution</p></li>
 </ul>
-</div>
-<span id="document-configuring-environment"></span><div class="section" id="configuring-your-environment-for-performance">
+</section>
+<span id="document-configuring-environment"></span><section id="configuring-your-environment-for-performance">
 <h2>Configuring your environment for Performance<a class="headerlink" href="#configuring-your-environment-for-performance" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="cpu">
+<section id="cpu">
 <h3>CPU<a class="headerlink" href="#cpu" title="Permalink to this headline">¶</a></h3>
 <p>The more physical cores that are available to Satellite 6.9, the higher throughput can be achieved for the tasks. Some of the Satellite components such as Puppet, MongoDB, PostgreSQL are CPU intensive applications and can really benefit from the higher number of available CPU cores.</p>
-</div>
-<div class="section" id="memory">
+</section>
+<section id="memory">
 <h3>Memory<a class="headerlink" href="#memory" title="Permalink to this headline">¶</a></h3>
 <p>The higher amount of memory available in the system running Satellite, the better will be the response times for the Satellite operations. Since Satellite uses PostgreSQL and MongoDB as the database solutions, any additional memory coupled with the tunings will provide a boost to the response times of the applications due to increased data retention in the memory.</p>
-</div>
-<div class="section" id="disk">
+</section>
+<section id="disk">
 <h3>Disk<a class="headerlink" href="#disk" title="Permalink to this headline">¶</a></h3>
 <p>With Satellite doing heavy IOPS due to repository synchronizations, package data retrieval, high frequency database updates for the subscription records of the content hosts, it is advised that Satellite be installed on a high speed SSD drive so as to avoid performance bottlenecks which may happen due to increased Disk reads or writes. Satellite 6 requires disk IO to be at or above 60-80 megabytes per second of average throughput for read operations. Anything below this value can have severe implications for the operation of the Satellite.</p>
-<div class="section" id="benchmark-disk-performance">
+<section id="benchmark-disk-performance">
 <h4>Benchmark disk performance<a class="headerlink" href="#benchmark-disk-performance" title="Permalink to this headline">¶</a></h4>
 <p>We are working to update foreman-maintain to only warn the users when its internal quick ‘fio’ benchmark results in numbers below our recommended throughput but will not require a whitelist parameter to continue.</p>
 <p>Also working on an updated benchmark script you can run (which will likely be integrated into foreman-maintain in the future) to get a more accurate real-world storage information.</p>
@@ -213,21 +216,21 @@ Starting 1 process
 </ul>
 <p>If you see values below this, please open a support ticket for assistance.</p>
 <p>Refer this <a class="reference external" href="https://access.redhat.com/solutions/3397771">blog</a> for more detailed info.</p>
-</div>
-</div>
-<div class="section" id="network">
+</section>
+</section>
+<section id="network">
 <h3>Network<a class="headerlink" href="#network" title="Permalink to this headline">¶</a></h3>
 <p>The communication between the Satellite and Capsules is impacted by the network performance. A decent network with a minimum jitter and low latency is required to enable hassle free operations such as Satellite and Capsule synchronization (at least make sure it is not causing connection resets, etc).</p>
-</div>
-<div class="section" id="server-power-management">
+</section>
+<section id="server-power-management">
 <h3>Server Power Management<a class="headerlink" href="#server-power-management" title="Permalink to this headline">¶</a></h3>
 <p>Your server by default is likely to be configured to conserve power. While this is a good approach to keep the max power consumption in check, it also has a side effect of lowering the performance that Satellite may be able to achieve. For a server running Satellite, it is recommended to set the BIOS to enable the system to be run in performance mode to boost the maximum performance levels that Satellite can achieve.</p>
-</div>
-</div>
-<span id="document-satellite-configuration-tuning"></span><div class="section" id="satellite-configuration-tuning">
+</section>
+</section>
+<span id="document-satellite-configuration-tuning"></span><section id="satellite-configuration-tuning">
 <h2>Satellite Configuration Tuning<a class="headerlink" href="#satellite-configuration-tuning" title="Permalink to this headline">¶</a></h2>
 <p>Red Hat Satellite as a product comes with a number of components that communicate with each other to produce a final outcome. All these components can be tuned independently of each other to achieve the maximum possible performance for the scenario desired.</p>
-<div class="section" id="tuned-profile">
+<section id="tuned-profile">
 <h3>Tuned profile<a class="headerlink" href="#tuned-profile" title="Permalink to this headline">¶</a></h3>
 <p>Red Hat Enterprise Linux 7 enables the tuned daemon by default during installation.  On bare-metal, it is recommended that Red Hat Satellite 6 and capsule servers run the ‘throughput-performance’ tuned profile. While, if virtualized, they should run the ‘virtual-guest’ profile. If it is not certain the system is currently running the correct profile, check with the ‘tuned-adm active’ command as shown above. More information about tuned is located in the Red Hat Enterprise Linux Performance Tuning Guide:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># service tuned start</span>
@@ -240,12 +243,12 @@ Starting 1 process
 </div>
 <p>Transparent Huge Pages is a memory management technique used by the Linux kernel which reduces the overhead of using Translation Lookaside Buffer (TLB) by using larger sized memory pages. Due to databases having Sparse Memory Access patterns instead of Contiguous Memory access patterns, database workloads often perform poorly when Transparent Huge Pages is enabled.
 To improve performance of MongoDB, Red Hat recommends Transparent Huge Pages be disabled. For details on disabling Transparent Huge Pages, see <a class="reference external" href="https://access.redhat.com/solutions/1320153">Red Hat Solution</a>.</p>
-</div>
-<div class="section" id="apache-httpd-performance-tuning">
+</section>
+<section id="apache-httpd-performance-tuning">
 <h3>Apache HTTPD Performance Tuning<a class="headerlink" href="#apache-httpd-performance-tuning" title="Permalink to this headline">¶</a></h3>
 <p>Apache httpd forms a core part of the Satellite and acts as a web server for handling the requests that are being made through the Satellite Web UI or exposed APIs. To increase the concurrency of the operations, httpd forms the first point where tuning can help to boost the performance of the Satellite.</p>
-</div>
-<div class="section" id="configuring-how-many-processes-can-be-launched-by-apache-httpd">
+</section>
+<section id="configuring-how-many-processes-can-be-launched-by-apache-httpd">
 <h3>Configuring how many processes can be launched by Apache httpd<a class="headerlink" href="#configuring-how-many-processes-can-be-launched-by-apache-httpd" title="Permalink to this headline">¶</a></h3>
 <p>The version of Apache httpd that ships with Red Hat Satellite 6 by default uses prefork request handling mechanism. With the prefork model of handling the requests, httpd will launch a new process to handle the incoming connection by the client.</p>
 <p>When the number of requests to the apache exceed the maximum number of child processes that can be launched to handle the incoming connections, an HTTP 503 Service Unavailable Error is raised by Apache.</p>
@@ -261,8 +264,8 @@ To improve performance of MongoDB, Red Hat recommends Transparent Huge Pages be 
 <p>In the above example, the ServerLimit parameter is set only to be able to raise MaxClients value.</p>
 <p>The MaxClients (see MaxRequestWorker which is a new name in Apache docs) parameter is being used to set the maximum number of child processes that httpd can launch to handle the incoming requests.</p>
 <p>The StartServers parameter defines how many server processes will be launched by default when the httpd process is started.</p>
-</div>
-<div class="section" id="increasing-the-maxopenfiles-limit">
+</section>
+<section id="increasing-the-maxopenfiles-limit">
 <h3>Increasing the MaxOpenFiles Limit<a class="headerlink" href="#increasing-the-maxopenfiles-limit" title="Permalink to this headline">¶</a></h3>
 <p>With the tuning in place, apache httpd can easily open a lot of file descriptors on the server which may exceed the default limit of most of the linux systems in place. To avoid any kind of issues that may arise as a result of exceeding max open files limit on the system, please create the following file and directory and set the contents of the file as specified in the below given example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">File</span><span class="p">:</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">systemd</span><span class="o">/</span><span class="n">system</span><span class="o">/</span><span class="n">httpd</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="n">limits</span><span class="o">.</span><span class="n">conf</span>
@@ -275,13 +278,13 @@ To improve performance of MongoDB, Red Hat recommends Transparent Huge Pages be 
 <span class="n">foreman</span><span class="o">-</span><span class="n">maintain</span> <span class="n">service</span> <span class="n">restart</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="calculating-the-maximum-open-files-limit-for-qdrouterd">
+</section>
+<section id="calculating-the-maximum-open-files-limit-for-qdrouterd">
 <h3>Calculating the maximum open files limit for qdrouterd<a class="headerlink" href="#calculating-the-maximum-open-files-limit-for-qdrouterd" title="Permalink to this headline">¶</a></h3>
 <p>Calculate the limit for open files in qdrouterd using this formula: (Nx3) + 100, where N is the number of content hosts. Each content host may consume up to three file descriptors in the router, and 100 filedescriptors are required to run the router itself.</p>
 <p>The following settings permit Satellite to scale up to 10,000 content hosts.</p>
-</div>
-<div class="section" id="qdrouterd-settings">
+</section>
+<section id="qdrouterd-settings">
 <h3>qdrouterd settings<a class="headerlink" href="#qdrouterd-settings" title="Permalink to this headline">¶</a></h3>
 <p>Add/Update qpid::router::open_file_limit  in custom-hiera.yaml as shown below:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">File</span><span class="p">:</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">foreman</span><span class="o">-</span><span class="n">installer</span><span class="o">/</span><span class="n">custom</span><span class="o">-</span><span class="n">hiera</span><span class="o">.</span><span class="n">yaml</span>
@@ -294,12 +297,12 @@ To improve performance of MongoDB, Red Hat recommends Transparent Huge Pages be 
 <span class="c1"># foreman-maintain service restart</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="calculating-the-maximum-open-files-limit-for-qpidd">
+</section>
+<section id="calculating-the-maximum-open-files-limit-for-qpidd">
 <h3>Calculating the maximum open files limit for qpidd<a class="headerlink" href="#calculating-the-maximum-open-files-limit-for-qpidd" title="Permalink to this headline">¶</a></h3>
 <p>Calculate the limit for open files in qpidd using this formula: (Nx4) + 500, where N is the number of content hosts. A single content host can consume up to four file descriptors and 500 file descriptors are required for the operations of Broker (a component of qpidd).</p>
-</div>
-<div class="section" id="qpidd-settings">
+</section>
+<section id="qpidd-settings">
 <h3>qpidd settings<a class="headerlink" href="#qpidd-settings" title="Permalink to this headline">¶</a></h3>
 <p>Add/Update qpid::open_file_limit in /etc/foreman-installer/custom-hiera.yaml as shown below:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">File</span><span class="p">:</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">foreman</span><span class="o">-</span><span class="n">installer</span><span class="o">/</span><span class="n">custom</span><span class="o">-</span><span class="n">hiera</span><span class="o">.</span><span class="n">yaml</span>
@@ -312,8 +315,8 @@ To improve performance of MongoDB, Red Hat recommends Transparent Huge Pages be 
 <span class="c1"># foreman-maintain service restart</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="maximum-asynchronous-input-output-aio-requests">
+</section>
+<section id="maximum-asynchronous-input-output-aio-requests">
 <h3>Maximum asynchronous input-output (AIO) requests<a class="headerlink" href="#maximum-asynchronous-input-output-aio-requests" title="Permalink to this headline">¶</a></h3>
 <p>Increase the maximum number of allowable concurrent AIO requests by increasing the kernel parameter <cite>fs.aio-max-nr</cite>.</p>
 <p>Edit configuration file <cite>/etc/sysctl.conf</cite>, setting the value of <cite>fs.aio-max-nr</cite> to the desired maximum.</p>
@@ -326,24 +329,24 @@ To improve performance of MongoDB, Red Hat recommends Transparent Huge Pages be 
 <div><p>sysctl -p</p>
 </div></blockquote>
 <p>Rebooting the machine also ensures that this change is applied.</p>
-</div>
-<div class="section" id="storage-considerations">
+</section>
+<section id="storage-considerations">
 <h3>Storage Considerations<a class="headerlink" href="#storage-considerations" title="Permalink to this headline">¶</a></h3>
 <p>Plan to have enough storage capacity for directory /var/lib/qpidd in advance when you are planning an installation that will use katello-agent extensively. In Red Hat Satellite 6, /var/lib/qpidd requires 2MB disk space per content host. See this <a class="reference external" href="https://bugzilla.redhat.com/show_bug.cgi?id=1366323">bug</a> for more details.</p>
-</div>
-<div class="section" id="mgmt-pub-interval-setting">
+</section>
+<section id="mgmt-pub-interval-setting">
 <h3>mgmt-pub-interval setting<a class="headerlink" href="#mgmt-pub-interval-setting" title="Permalink to this headline">¶</a></h3>
 <p>You might see the following error in /var/log/journal in Red Hat Enterprise Linux 7:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">satellite</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span> <span class="n">qpidd</span><span class="p">[</span><span class="mi">92464</span><span class="p">]:</span> <span class="p">[</span><span class="n">Broker</span><span class="p">]</span> <span class="n">error</span> <span class="n">Channel</span> <span class="n">exception</span><span class="p">:</span> <span class="ow">not</span><span class="o">-</span><span class="n">attached</span><span class="p">:</span> <span class="n">Channel</span> <span class="mi">2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">attached</span><span class="p">(</span><span class="o">/</span><span class="n">builddir</span><span class="o">/</span><span class="n">build</span><span class="o">/</span><span class="n">BUILD</span><span class="o">/</span><span class="n">qpid</span><span class="o">-</span><span class="n">cpp</span><span class="o">-</span><span class="mf">0.30</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">qpid</span><span class="o">/</span><span class="n">amqp_0_10</span><span class="o">/</span><span class="n">SessionHandler</span><span class="o">.</span><span class="n">cpp</span><span class="p">:</span> <span class="mi">39</span><span class="p">)</span><span class="n">satellite</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span>    <span class="n">qpidd</span><span class="p">[</span><span class="mi">92464</span><span class="p">]:</span> <span class="p">[</span><span class="n">Protocol</span><span class="p">]</span> <span class="n">error</span> <span class="n">Connectionqpid</span><span class="o">.</span><span class="mf">10.1</span><span class="o">.</span><span class="mf">10.1</span><span class="p">:</span><span class="mi">5671</span><span class="o">-</span><span class="mf">10.1</span><span class="o">.</span><span class="mf">10.1</span><span class="p">:</span><span class="mi">53790</span> <span class="n">timed</span> <span class="n">out</span><span class="p">:</span> <span class="n">closing</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">satellite</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span> <span class="n">qpidd</span><span class="p">[</span><span class="mi">92464</span><span class="p">]:</span> <span class="p">[</span><span class="n">Broker</span><span class="p">]</span> <span class="n">error</span> <span class="n">Channel</span> <span class="n">exception</span><span class="p">:</span> <span class="ow">not</span><span class="o">-</span><span class="n">attached</span><span class="p">:</span> <span class="n">Channel</span> <span class="mi">2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">attached</span><span class="p">(</span><span class="o">/</span><span class="n">builddir</span><span class="o">/</span><span class="n">build</span><span class="o">/</span><span class="n">BUILD</span><span class="o">/</span><span class="n">qpid</span><span class="o">-</span><span class="n">cpp</span><span class="o">-</span><span class="mf">0.30</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">qpid</span><span class="o">/</span><span class="n">amqp_0_10</span><span class="o">/</span><span class="n">SessionHandler</span><span class="o">.</span><span class="n">cpp</span><span class="p">:</span> <span class="mi">39</span><span class="p">)</span><span class="n">satellite</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span>    <span class="n">qpidd</span><span class="p">[</span><span class="mi">92464</span><span class="p">]:</span> <span class="p">[</span><span class="n">Protocol</span><span class="p">]</span> <span class="n">error</span> <span class="n">Connectionqpid</span><span class="mf">.10.1.10.1</span><span class="p">:</span><span class="mi">5671</span><span class="o">-</span><span class="mf">10.1.10.1</span><span class="p">:</span><span class="mi">53790</span> <span class="n">timed</span> <span class="n">out</span><span class="p">:</span> <span class="n">closing</span>
 </pre></div>
 </div>
 <p>This error message appears because qpid maintains management objects for queues, sessions, and connections and recycles them every ten seconds by default. The same object with the same ID is created, deleted, and created again. The old management object is not yet purged, which is why qpid throws this error. Here’s a workaround: lower the mgmt-pub-interval parameter from the default 10seconds to something lower. Add it to /etc/qpid/qpidd.conf and restart the qpidd service.  See also <a class="reference external" href="https://bugzilla.redhat.com/show_bug.cgi?id=1335694">Bug 1335694</a> comment 7.</p>
-</div>
-<div class="section" id="puma-tuning">
+</section>
+<section id="puma-tuning">
 <span id="id1"></span><h3>Puma Tuning<a class="headerlink" href="#puma-tuning" title="Permalink to this headline">¶</a></h3>
 <p>Puma is a ruby application server which is used for serving the Foreman related requests to the clients.</p>
 <p>For any Satellite configuration that is supposed to handle a large number of clients or frequent operations, it is important for the Puma to be tuned appropriately.</p>
-<div class="section" id="threads-min-effects">
+<section id="threads-min-effects">
 <h4>Threads min effects<a class="headerlink" href="#threads-min-effects" title="Permalink to this headline">¶</a></h4>
 <p>Less threads will lead to more memory usage for different scales on the Satellite server.</p>
 <p>For example, we have compared these two setups:</p>
@@ -370,8 +373,8 @@ To improve performance of MongoDB, Red Hat recommends Transparent Huge Pages be 
 </tbody>
 </table>
 <p>When we tune the puma server with t_min=16 puma will consume about 12% less memory as compared to t_min=0.</p>
-</div>
-<div class="section" id="setting-threads-min-max-workers">
+</section>
+<section id="setting-threads-min-max-workers">
 <h4>Setting threads min, max &amp; workers<a class="headerlink" href="#setting-threads-min-max-workers" title="Permalink to this headline">¶</a></h4>
 <p>More workers will allow for lower time to register hosts in parallel.</p>
 <p>For example, we have compared these two setups:</p>
@@ -398,8 +401,8 @@ To improve performance of MongoDB, Red Hat recommends Transparent Huge Pages be 
 </tbody>
 </table>
 <p>In the second case with more workers but the same total number of threads, we have seen about 11% of speedup in highly concurrent registrations scenario. Moreover, adding more workers did not consume more cpu and memory but will get more performance.</p>
-</div>
-<div class="section" id="setting-right-number-of-workers-for-different-number-of-cpus">
+</section>
+<section id="setting-right-number-of-workers-for-different-number-of-cpus">
 <h4>Setting right number of workers for different number of CPUs<a class="headerlink" href="#setting-right-number-of-workers-for-different-number-of-cpus" title="Permalink to this headline">¶</a></h4>
 <p>If you have enough CPUs, adding more workers adds more performance.</p>
 <p>For example, we have compared Satellite setups with 8 and 16 CPUs.</p>
@@ -427,14 +430,14 @@ To improve performance of MongoDB, Red Hat recommends Transparent Huge Pages be 
 </table>
 <p>In 8 CPUs setup, changing the number of workers from 2 to 16, improved concurrent registration time by 36%. In 16 CPU setup, the same change caused 55% improvement.</p>
 <p>Adding more workers can also help with total registration concurrency Satellite can handle. In our measurements, setups with 2 workers were able to handle up to 480 concurrent registrations, but adding more workers improved the situation.</p>
-</div>
-</div>
-<div class="section" id="dynflow-tuning">
+</section>
+</section>
+<section id="dynflow-tuning">
 <h3>Dynflow Tuning<a class="headerlink" href="#dynflow-tuning" title="Permalink to this headline">¶</a></h3>
 <p>Dynflow is the workflow management system and task orchestrator which is built as a plugin inside Foreman and is used to execute the different tasks of Satellite in an out-of-order execution manner. Under the conditions when there are a lot of clients checking in on Satellite and running a number of tasks, the Dynflow can take some help from an added tuning specifying how many executors can it launch.</p>
 <p>The following configuration snippet provides more information about the tunings involved related to Dynflow: <a class="reference external" href="https://satellite.example.com/foreman_tasks/sidekiq">https://satellite.example.com/foreman_tasks/sidekiq</a></p>
-</div>
-<div class="section" id="postgresql-tuning">
+</section>
+<section id="postgresql-tuning">
 <h3>PostgreSQL Tuning<a class="headerlink" href="#postgresql-tuning" title="Permalink to this headline">¶</a></h3>
 <p>PostgreSQL is the primary SQL based database that is used by Satellite for the storage of persistent context across a wide variety of tasks that Satellite does. The database sees an extensive usage is usually working on to provide the Satellite with the data which it needs for its smooth functioning. This makes PostgreSQL a heavily used process which if tuned can have a number of benefits on the overall operational response of Satellite.</p>
 <p>The below set of tunings can be applied to PostgreSQL to improve its response times (see <cite>how to use custom-hiera.yaml</cite> file; this will modify /var/lib/pgsql/data/postgresql.conf file):</p>
@@ -452,8 +455,8 @@ To improve performance of MongoDB, Red Hat recommends Transparent Huge Pages be 
 <p>work_mem: The work_mem is the memory that is allocated on per process basis for Postgresql and is used to store the intermediate results of the operations that are being performed by the process. Setting this value to 8 MB should be more than enough for most of the intensive operations on Satellite.</p>
 <p>autovacuum_vacuum_cost_limit: The key defines the cost limit value for the vacuuming operation inside the autovacuum process to clean up the dead tuples inside the database relations. The cost limit defines the number of tuples that can be processed in a single run by the process. An optimal value for this is 2000 based on the general load that Satellite pushes on the PostgreSQL server process.</p>
 <p>Note - With the upgrade to Postgres 12, ‘checkpoint_segments’ configuration is not supported. For more details, please refer to this <a class="reference external" href="https://bugzilla.redhat.com/show_bug.cgi?id=1867311#c12">bugzilla</a> .</p>
-</div>
-<div class="section" id="benchmarking-raw-db-performance">
+</section>
+<section id="benchmarking-raw-db-performance">
 <h3>Benchmarking raw DB performance<a class="headerlink" href="#benchmarking-raw-db-performance" title="Permalink to this headline">¶</a></h3>
 <p>To get a list of the top table sizes in disk space for both Candlepin and Foreman, check <a class="reference external" href="https://github.com/RedHatSatellite/satellite-support/blob/master/postgres-size-report">postgres-size-report</a> script in <a class="reference external" href="https://github.com/RedHatSatellite/satellite-support">satellite-support</a>  git repository.</p>
 <p>PGbench utility (note you may need to resize PostgreSQL data directory /var/lib/pgsql/ directory to 100GB or what does benchmark take to run) might be used to measure PostgreSQL performance on your system. Use yum install postgresql-contrib to install it. Some resources are:</p>
@@ -475,8 +478,8 @@ To improve performance of MongoDB, Red Hat recommends Transparent Huge Pages be 
 <li><p>Before you start testing, see how big the database files are. Testing with a really small database would not produce any meaningful results. E.g. if the DB is only 20G and the buffer pool is 32G, it won’t show problems with large number of connections because the data will be completely buffered.</p></li>
 </ul>
 </div></blockquote>
-</div>
-<div class="section" id="mongodb-tuning">
+</section>
+<section id="mongodb-tuning">
 <h3>MongoDb Tuning<a class="headerlink" href="#mongodb-tuning" title="Permalink to this headline">¶</a></h3>
 <p>Under certain circumstances, mongod consumes randomly high memory (up to 1/2 of all RAM) and this aggressive memory usage limits other processes or can cause OOM killer to kill mongod. In order to overcome this situation, tune the cache size by referring the following steps:</p>
 <p><strong>1.</strong> Update custom-hiera.yaml:</p>
@@ -490,8 +493,8 @@ To improve performance of MongoDB, Red Hat recommends Transparent Huge Pages be 
 </pre></div>
 </div>
 <p>For more details, please refer to this Kbase <a class="reference external" href="https://access.redhat.com/solutions/4505561">article</a>.</p>
-</div>
-<div class="section" id="benchmarking-raw-performance">
+</section>
+<section id="benchmarking-raw-performance">
 <h3>Benchmarking raw performance<a class="headerlink" href="#benchmarking-raw-performance" title="Permalink to this headline">¶</a></h3>
 <p>To get a size report of MongoDB, use <a class="reference external" href="https://github.com/RedHatSatellite/satellite-support/blob/master/mongo-size-report">mongo-size-report</a> from <a class="reference external" href="https://github.com/RedHatSatellite/satellite-support/">satellite-support</a>  repository.</p>
 <p>Utility used for checking IO speed specific to MongoDB:</p>
@@ -513,10 +516,10 @@ To improve performance of MongoDB, Red Hat recommends Transparent Huge Pages be 
 <li><p>Never do any testing on production system and without valid backup.</p></li>
 </ul>
 </div></blockquote>
+</section>
+</section>
 </div>
-</div>
-</div>
-</div>
+</section>
 
 
           </div>
@@ -570,7 +573,7 @@ To improve performance of MongoDB, Red Hat recommends Transparent Huge Pages be 
       &copy;2021, Red Hat.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.0.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>
